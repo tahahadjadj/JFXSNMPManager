@@ -96,3 +96,10 @@ public class SnmpGetExample{
         snmp.close();
     }
 }
+
+//<editor-fold defaultstate="collapsed" desc="Output">
+//SNMP GET Demo
+//Sending Request to Agent...
+//Got Response from Agent
+//Snmp Get Response = [1.3.6.1.2.1.1.1.0 = Test Agent Simulator]
+//</editor-fold>
