@@ -23,7 +23,7 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-public class SnmpGetExample{
+public class SnmpGetExample1{
     private static String ipAddress = "192.168.1.2";
 
     private static String port = "161";
@@ -37,9 +37,8 @@ public class SnmpGetExample{
     public static void main(String[] args) throws Exception{
         System.out.println("SNMP GET Demo");
         
-        // Create TransportMapping and Listen
-       /* TransportMapping transport = new DefaultUdpTransportMapping();
-        transport.listen();*/
+        
+       
 
         // Create Target Address object
         CommunityTarget comtarget = new CommunityTarget();
@@ -58,7 +57,6 @@ public class SnmpGetExample{
         // Create Snmp object for sending data to Agent
         Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
         snmp.listen();
-
         System.out.println("Sending Request to Agent...");
         ResponseEvent response = snmp.send(pdu, comtarget);
 
