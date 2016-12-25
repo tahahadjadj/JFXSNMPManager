@@ -35,14 +35,14 @@ public class Users implements Serializable {
         //importing serialized users file
         try{
             //use buffering
-            FileInputStream file = new FileInputStream("quarks.ser");
+            FileInputStream file = new FileInputStream("Users.ser");
             ObjectInputStream input = new ObjectInputStream (file);
             try{
               //deserialize the List
               usersList = (ArrayList<User>)input.readObject();
               //display its data
               for(User user: usersList){
-                    System.out.println("Recovered Quark: " + user.username);
+                    System.out.println("Recovered user: " + user.username);
               }
             }
             finally{
@@ -64,7 +64,7 @@ public class Users implements Serializable {
     public static void saveUsersFile(){
         try{
             //use buffering
-            FileOutputStream file = new FileOutputStream("quarks.ser");
+            FileOutputStream file = new FileOutputStream("Users.ser");
             ObjectOutputStream output = new ObjectOutputStream(file);
             try{
               output.writeObject(usersList);
