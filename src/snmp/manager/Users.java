@@ -27,6 +27,7 @@ public class Users implements Serializable {
     }
     
     private static ArrayList<User> usersList = new ArrayList<>() ; 
+    public static User currentUser; // the user currently logged in the session
     
     /**
      * importing the "Users.ser" file that contains the serialized value of ArrayList<User> usersList
@@ -55,6 +56,9 @@ public class Users implements Serializable {
         }
         catch(IOException ex){
             System.err.println("Cannot perform input."+ ex);
+            addUser("admin","admin");
+            saveUsersFile();
+            System.err.println("new file Users.ser created");
         }
     }
     
@@ -85,20 +89,29 @@ public class Users implements Serializable {
      *
      * @param username
      * @param password
+     * @return 1 if created successfully, -1 if user exists
      */
-    public static void addUser(String username, String password ){
+    public static int addUser(String username, String password ){
         try {
-            User newUser = new User();
-            // haching the sting password
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            newUser.username = username;
-            newUser.password = md.digest();
-            usersList.add(newUser);
+            
+            User newUser = getUser(username);
+            if(newUser==null){
+                newUser=new User();
+                // haching the sting password
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(password.getBytes());
+                newUser.username = username;
+                newUser.password = md.digest();
+                usersList.add(newUser);
+            }
+            else{
+                System.err.println("username already exists");
+                return -1;
+            }
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        return 1;
     }
     
     /**
@@ -112,11 +125,14 @@ public class Users implements Serializable {
         User user = getUser(username);
         if(user!=null){
             try {
-            // haching the sting password
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            if(user.password == md.digest())
-                return true;
+                System.out.println(user.username);
+                // haching the sting password
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(password.getBytes());
+                if(Arrays.toString(user.password).equals(Arrays.toString(md.digest()))){
+                    currentUser = user;
+                    return true;
+                }
             else
                 return false;
             } catch (NoSuchAlgorithmException ex) {
@@ -137,7 +153,7 @@ public class Users implements Serializable {
      */
     public static User getUser(String username){
         int i;
-        for(i=0 ; !usersList.get(i).username.equals(username) && i<usersList.size();i++){ 
+        for(i=0; (i<usersList.size())?!usersList.get(i).username.equals(username):false; i++){ 
                 System.out.println("searching for user "+i+"/"+usersList.size());
             }
         if(i==usersList.size()){
@@ -150,13 +166,14 @@ public class Users implements Serializable {
     
     
     public static void main(String[] args){
-        addUser("admin","admin");
-        saveUsersFile();
+//        addUser("admin","admin");
+//        saveUsersFile();
 
-//        importUsers();
-//                for(User user: usersList){
-//                    System.out.println("Recovered user: " + user.username);
-//                }
+        importUsers();
+        checkUser("admin", "admin");
+//        
+//        System.out.println(checkUser("admin", "admin"));
+        
     }
     
 }
