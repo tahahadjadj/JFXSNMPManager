@@ -132,6 +132,9 @@ public class Users implements Serializable {
                 md.update(password.getBytes());
                 if(Arrays.toString(user.password).equals(Arrays.toString(md.digest()))){
                     currentUser = user;
+                    // the logged in user is placed in the head og the list, this helps knowing who is the last user who used the program
+                    usersList.remove(user);
+                    usersList.add(0, user);
                     return true;
                 }
             else
@@ -165,6 +168,17 @@ public class Users implements Serializable {
             return usersList.get(i);
     }
     
+    /**
+     *
+     * @return int : number of created users
+     */
+    public static int getUsersCount(){
+        return usersList.size();
+    }
+    
+    public static String getLastUser(){
+        return usersList.get(0).username;
+    }
     
     public static void main(String[] args){
 //        addUser("admin","admin");
