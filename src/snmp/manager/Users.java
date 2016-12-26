@@ -19,7 +19,7 @@ import java.util.logging.*;
  */
 public class Users implements Serializable {
     
-    private static class User implements Serializable {
+    public static class User implements Serializable {
         public String username;
         public byte password[];          //hached password
         

@@ -17,12 +17,13 @@ import javafx.stage.Stage;
  */
 public class SNMPManager extends Application {
     
+    public static Stage mainStage;
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("SNMPManager.fxml"));
         
         Scene scene = new Scene(root);
-        
+        mainStage = stage;
         stage.setScene(scene);
         stage.show();
     }

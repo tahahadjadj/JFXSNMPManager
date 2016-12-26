@@ -5,14 +5,21 @@
  */
 package snmp.manager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -33,7 +40,16 @@ public class SNMPManagerController implements Initializable {
     private void loginButtonAction(ActionEvent ae){
         System.out.println("checking user");
         if(Users.checkUser(username.getText(), password.getText())){
-            message.setText("access granted");
+            try {
+                message.setText("access granted");
+                Parent root = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = SNMPManager.mainStage;
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else
             message.setText("access denied");
