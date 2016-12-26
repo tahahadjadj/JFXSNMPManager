@@ -55,6 +55,7 @@ public class Users implements Serializable {
             System.err.println("Cannot perform input. Class not found."+ ex);
         }
         catch(IOException ex){
+            //if the file Users.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
             addUser("admin","admin");
             saveUsersFile();
