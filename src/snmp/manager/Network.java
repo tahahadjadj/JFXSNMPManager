@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Vector;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -65,7 +66,9 @@ public class Network {
 
         // Create the PDU object
         PDU pdu = new PDU();
-        pdu.add(new VariableBinding(new OID(oidValue)));
+        for (String oid : Device.ScanOIDs.values()) { 
+             pdu.add(new VariableBinding(new OID(oid))); 
+        } 
         pdu.setType(PDU.GET);
         pdu.setRequestID(new Integer32(1));
 
@@ -87,7 +90,13 @@ public class Network {
                 if (errorStatus == PDU.noError){
 
                     System.out.println(host+" added");
-                    Devices.add(new Device(host)); //add reachable devices
+                    Device d= new Device(host);
+                    Vector vbs = responsePDU.getVariableBindings(); 
+                    for (int j = 0; j < vbs.size(); j++) { 
+                        VariableBinding vb = (VariableBinding) vbs.get(i); 
+                        d.oids.put(vb.getOid().toString(), vb.getVariable().toString()); 
+                     }
+                    Devices.add(d); //add reachable devices
                 }
                
             }
