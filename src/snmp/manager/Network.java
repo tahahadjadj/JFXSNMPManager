@@ -93,7 +93,7 @@ public class Network {
                     Device d= new Device(host);
                     Vector vbs = responsePDU.getVariableBindings(); 
                     for (int j = 0; j < vbs.size(); j++) { 
-                        VariableBinding vb = (VariableBinding) vbs.get(i); 
+                        VariableBinding vb = (VariableBinding) vbs.get(j); 
                         d.oids.put(vb.getOid().toString(), vb.getVariable().toString()); 
                      }
                     Devices.add(d); //add reachable devices
@@ -115,6 +115,11 @@ public class Network {
        n.setSubnet("192.168.1");
        //n.checkHostsPing();
        n.checkHostsSnmp();
+       //test
+       for(int i=0;i<n.Devices.size();i++)
+       {
+           n.Devices.get(i).printDeviceInformations();
+       }
        
    }
 }

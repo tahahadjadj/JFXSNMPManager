@@ -7,6 +7,7 @@ package snmp.manager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Device {
@@ -27,6 +28,11 @@ public class Device {
         oids = new HashMap<String, String>();
     }
     
-   
+    public void printDeviceInformations()
+    {
+        for (Map.Entry entry : oids.entrySet()) {
+                    System.out.println(entry.getKey() + ", " + entry.getValue());
+       } 
+    }
     
 }
