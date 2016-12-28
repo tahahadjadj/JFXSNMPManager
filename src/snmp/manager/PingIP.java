@@ -31,7 +31,7 @@ public class PingIP {
 
 	public static void main(String[] args) {
 		
-		String ip = "192.168.1.2";
+		String ip = "192.168.1.1";
 		runSystemCommand("ping " + ip);
 
 	

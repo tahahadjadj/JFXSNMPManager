@@ -23,13 +23,16 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-public class SnmpGetExample1{
-    private static String ipAddress = "192.168.1.2";
+public class SnmpGetExampl{
+    
+    
+  
+    private static String ipAddress = "192.168.1.3";
 
     private static String port = "161";
 
 // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
-    private static String oidValue = ".1.3.6.1.2.1.1.1.0"; // ends with 0 for scalar object
+    private static String oidValue = "1.3.6.1.2.1.1.5.0"; // ends with 0 for scalar object
 
     private static int snmpVersion = SnmpConstants.version1;
 
@@ -38,7 +41,7 @@ public class SnmpGetExample1{
         System.out.println("SNMP GET Demo");
         
         
-       
+         System.out.println("hello1");
 
         // Create Target Address object
         CommunityTarget comtarget = new CommunityTarget();
@@ -61,7 +64,7 @@ public class SnmpGetExample1{
         ResponseEvent response = snmp.send(pdu, comtarget);
 
         // Process Agent Response
-        if (response != null){
+        if (response.getResponse() != null){
 
             System.out.println("Got Response from Agent");
             PDU responsePDU = response.getResponse();
@@ -95,6 +98,7 @@ public class SnmpGetExample1{
         snmp.close();
     }
 }
+
 
 //<editor-fold defaultstate="collapsed" desc="Output">
 //SNMP GET Demo

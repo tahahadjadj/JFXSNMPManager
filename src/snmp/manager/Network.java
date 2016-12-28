@@ -5,15 +5,13 @@
  */
 package snmp.manager;
 
-/**
- *
- * @author HP
- */
-
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
 import org.snmp4j.event.ResponseEvent;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.Integer32;
@@ -23,29 +21,45 @@ import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-public class SnmpGetExample{
-    private static String ipAddress = "192.168.1.2";
 
-    private static String port = "161";
-
+public class Network {
+    
+   String subnet="192.168.1"; 
+   private ArrayList<Device> Devices = new ArrayList<Device>(); //contains the network devices
+   
+   public void setSubnet(String subnet)
+   {
+       this.subnet=subnet;
+   }
+   
+   public void checkHostsPing() throws UnknownHostException, IOException{ //discover hosts using ping
+   int timeout=1000;
+   for (int i=1;i<255;i++){
+       String host=subnet + "." + i;
+       if (InetAddress.getByName(host).isReachable(timeout)){
+           System.out.println(host + " is reachable");
+           Devices.add(new Device(host)); //add reachable devices
+           
+       }
+    }
+   }
+   public void checkHostsSnmp() throws UnknownHostException, IOException{ //discover hosts using ping
+   int timeout=1000;
+   
+   for (int i=1;i<7;i++){
+       
+       String host=subnet + "." + i;
+       String port = "161";
 // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
-    private static String oidValue = ".1.3.6.1.2.1.1.1.0"; // ends with 0 for scalar object
-
-    private static int snmpVersion = SnmpConstants.version1;
-
-    private static String community="public";
-    public static void main(String[] args) throws Exception{
-        System.out.println("SNMP GET Demo");
-        
-        // Create TransportMapping and Listen
-       /* TransportMapping transport = new DefaultUdpTransportMapping();
-        transport.listen();*/
-
+       String oidValue = "1.3.6.1.2.1.1.5.0"; // ends with 0 for scalar object
+       int snmpVersion = SnmpConstants.version1;
+       String community="public";
+       
         // Create Target Address object
         CommunityTarget comtarget = new CommunityTarget();
         comtarget.setCommunity(new OctetString(community));
         comtarget.setVersion(snmpVersion);
-        comtarget.setAddress(new UdpAddress(ipAddress + "/" + port));
+        comtarget.setAddress(new UdpAddress(host + "/" + port));
         comtarget.setRetries(2);
         comtarget.setTimeout(1000);
 
@@ -58,14 +72,11 @@ public class SnmpGetExample{
         // Create Snmp object for sending data to Agent
         Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
         snmp.listen();
-
-        System.out.println("Sending Request to Agent...");
         ResponseEvent response = snmp.send(pdu, comtarget);
 
         // Process Agent Response
-        if (response != null){
+        if (response.getResponse() != null){
 
-            System.out.println("Got Response from Agent");
             PDU responsePDU = response.getResponse();
             if (responsePDU != null){
 
@@ -75,32 +86,27 @@ public class SnmpGetExample{
 
                 if (errorStatus == PDU.noError){
 
-                    System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+                    System.out.println(host+" added");
+                    Devices.add(new Device(host)); //add reachable devices
                 }
-                else{
-
-                    System.out.println("Error: Request Failed");
-                    System.out.println("Error Status = " + errorStatus);
-                    System.out.println("Error Index = " + errorIndex);
-                    System.out.println("Error Status Text = " + errorStatusText);
-                }
+               
             }
-            else{
-
-                System.out.println("Error: Response PDU is null");
-            }
+          
         }
-        else{
-
-            System.out.println("Error: Agent Timeout... ");
-        }
+      
         snmp.close();
     }
+    
+   }
+   
+   //Main class
+   public static void main (String args[]) throws IOException
+   {
+       Network n= new Network();
+       n.setSubnet("192.168.1");
+       //n.checkHostsPing();
+       n.checkHostsSnmp();
+       
+   }
 }
 
-//<editor-fold defaultstate="collapsed" desc="Output">
-//SNMP GET Demo
-//Sending Request to Agent...
-//Got Response from Agent
-//Snmp Get Response = [1.3.6.1.2.1.1.1.0 = Test Agent Simulator]
-//</editor-fold>
