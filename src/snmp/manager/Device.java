@@ -5,14 +5,16 @@
  */
 package snmp.manager;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 
-public class Device {
+public class Device implements Serializable{
     
     String ipAdress;
+    String alias;
     Map<String, String> oids; //oids values
      public static final Map<String, String> ScanOIDs = new HashMap<String, String>(); 
     static { 
@@ -27,6 +29,13 @@ public class Device {
         ipAdress=ip;
         oids = new HashMap<String, String>();
     }
+     public Device(String ip, String alias)
+    {
+        ipAdress=ip;
+        this.alias=alias;
+        oids = new HashMap<String, String>();
+    }
+    
     
     public void printDeviceInformations()
     {

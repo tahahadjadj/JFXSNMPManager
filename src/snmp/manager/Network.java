@@ -5,11 +5,20 @@
  */
 package snmp.manager;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -21,6 +30,10 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
+import static snmp.manager.Users.addUser;
+import static snmp.manager.Users.currentUser;
+import static snmp.manager.Users.importUsers;
+import static snmp.manager.Users.saveUsersFile;
 
 
 public class Network {
@@ -105,22 +118,118 @@ public class Network {
       
         snmp.close();
     }
-    
    }
    
+    public void importDevices(){
+        //importing serialized devices file
+        try{
+            //use buffering
+            FileInputStream file = new FileInputStream("Devices.ser");
+            ObjectInputStream input = new ObjectInputStream (file);
+            try{
+              //deserialize the List
+              Devices = (ArrayList<Device>)input.readObject();
+              //display its data
+              for(Device dv: Devices){
+                    System.out.println("Recovered device: " + dv.ipAdress);
+              }
+            }
+            finally{
+                input.close();
+                file.close();
+            }
+        }
+        catch(ClassNotFoundException ex){
+            System.err.println("Cannot perform input. Class not found."+ ex);
+        }
+        catch(IOException ex){
+            //if the file Users.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
+            System.err.println("Cannot perform input."+ ex);
+            addUser("admin","admin");
+            saveUsersFile();
+            System.err.println("new file Users.ser created");
+        }
+    }
+    
+   
+     public void saveDeviceFile(){
+        try{
+            //use buffering
+            FileOutputStream file = new FileOutputStream("Devices.ser");
+            ObjectOutputStream output = new ObjectOutputStream(file);
+            try{
+              output.writeObject(Devices);
+            }
+            finally{
+              output.close();
+              file.close();
+            }
+        }   
+        catch(IOException ex){
+            System.err.println("Cannot perform output."+ ex);
+        }
+
+    }
+      public static int addDevice(Network n,String ip, String alias){
+
+            
+            Device dv = n.getDevice(ip);
+            if(dv==null){
+                dv=new Device(ip, alias);
+                return 1;
+            }
+            else{
+                System.err.println("Device already exists");
+                return -1;
+            }
+       
+    }
+    
+    
+    /**
+     * looking for a device by its ip address
+     *
+     * 
+     */
+    public Device getDevice(String ip){
+        int i;
+        for(i=0; (i<Devices.size())?!Devices.get(i).ipAdress.equals(ip):false; i++){ 
+                System.out.println("searching for device "+i+"/"+Devices.size());
+            }
+        if(i==Devices.size()){
+            System.out.println("device not found");
+            return null;
+        }
+        else
+            return Devices.get(i);
+    }
+    
+    /**
+     *
+     * @return int : number of created devices
+     */
+    public int getDevicesCount(){
+        return Devices.size();
+    }
+    
+    public String getLastDevice(){
+        return Devices.get(0).ipAdress;
+    }
+    
    //Main class
    public static void main (String args[]) throws IOException
    {
        Network n= new Network();
        n.setSubnet("192.168.1");
        //n.checkHostsPing();
-       n.checkHostsSnmp();
+       //n.checkHostsSnmp();
        //test
+       n.importDevices();
        for(int i=0;i<n.Devices.size();i++)
        {
            n.Devices.get(i).printDeviceInformations();
        }
-       
+       n.saveDeviceFile();
    }
 }
 
