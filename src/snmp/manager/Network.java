@@ -16,6 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,26 +39,30 @@ import static snmp.manager.Users.saveUsersFile;
 
 public class Network {
     
-   String subnet="192.168.1"; 
+  
+   IPv4 ip;
+   String subnet;
    private ArrayList<Device> Devices = new ArrayList<Device>(); //contains the network devices
    
-   public void setSubnet(String subnet)
+   public Network(String ipS, String netMask)
    {
-       this.subnet=subnet;
+       ip=new IPv4(ipS,netMask);
+       subnet=ip.getCIDR();
    }
    
    public void checkHostsPing() throws UnknownHostException, IOException{ //discover hosts using ping
    int timeout=1000;
-   for (int i=1;i<255;i++){
-       String host=subnet + "." + i;
-       if (InetAddress.getByName(host).isReachable(timeout)){
-           System.out.println(host + " is reachable");
-           Devices.add(new Device(host)); //add reachable devices
+   long numberOfHosts= ip.getNumberOfHosts();
+   List<String> availableIPs= ip.getAvailableIPs((int)(long)(numberOfHosts));
+       for (int i=0;i<availableIPs.size();i++){
+       if (InetAddress.getByName(availableIPs.get(i)).isReachable(timeout)){
+           System.out.println(availableIPs.get(i) + " is reachable");
+           Devices.add(new Device(availableIPs.get(i))); //add reachable devices
            
        }
     }
    }
-   public void checkHostsSnmp() throws UnknownHostException, IOException{ //discover hosts using ping
+   /*public void checkHostsSnmp() throws UnknownHostException, IOException{ //discover hosts using ping
    int timeout=1000;
    
    for (int i=1;i<7;i++){
@@ -118,7 +123,7 @@ public class Network {
       
         snmp.close();
     }
-   }
+   }*/
    
     public void importDevices(){
         //importing serialized devices file
@@ -219,12 +224,11 @@ public class Network {
    //Main class
    public static void main (String args[]) throws IOException
    {
-       Network n= new Network();
-       n.setSubnet("192.168.1");
-       //n.checkHostsPing();
+       Network n= new Network("192.168.1.2","255.255.255.0");
+       n.checkHostsPing();
        //n.checkHostsSnmp();
        //test
-       n.importDevices();
+      // n.importDevices();
        for(int i=0;i<n.Devices.size();i++)
        {
            n.Devices.get(i).printDeviceInformations();
