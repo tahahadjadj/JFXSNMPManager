@@ -24,6 +24,7 @@ import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.event.ResponseListener;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
@@ -62,12 +63,12 @@ public class Network {
        }
     }
    }
-   /*public void checkHostsSnmp() throws UnknownHostException, IOException{ //discover hosts using ping
+   public void checkHostsSnmp() throws UnknownHostException, IOException{ //discover hosts using ping
    int timeout=1000;
    
-   for (int i=1;i<7;i++){
-       
-       String host=subnet + "." + i;
+   long numberOfHosts= ip.getNumberOfHosts();
+   List<String> availableIPs= ip.getAvailableIPs((int)(long)(numberOfHosts));
+      for (int i=0;i<availableIPs.size();i++){
        String port = "161";
 // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
        String oidValue = "1.3.6.1.2.1.1.5.0"; // ends with 0 for scalar object
@@ -78,7 +79,7 @@ public class Network {
         CommunityTarget comtarget = new CommunityTarget();
         comtarget.setCommunity(new OctetString(community));
         comtarget.setVersion(snmpVersion);
-        comtarget.setAddress(new UdpAddress(host + "/" + port));
+        comtarget.setAddress(new UdpAddress(availableIPs.get(i)+ "/" + port));
         comtarget.setRetries(2);
         comtarget.setTimeout(1000);
 
@@ -107,8 +108,8 @@ public class Network {
 
                 if (errorStatus == PDU.noError){
 
-                    System.out.println(host+" added");
-                    Device d= new Device(host);
+                    System.out.println(availableIPs.get(i)+" added");
+                    Device d= new Device(availableIPs.get(i));
                     Vector vbs = responsePDU.getVariableBindings(); 
                     for (int j = 0; j < vbs.size(); j++) { 
                         VariableBinding vb = (VariableBinding) vbs.get(j); 
@@ -123,8 +124,50 @@ public class Network {
       
         snmp.close();
     }
-   }*/
+   }
+   //using braodcast didnt work yet
+    public void checkHostsSnmp2() throws UnknownHostException, IOException{ //discover hosts using snmp get
+        
+       int timeout=1000;  
+       String port = "161";
+// OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
+       int snmpVersion = SnmpConstants.version1;
+       String community="public";
+       
+        // Create Target Address object
+        CommunityTarget comtarget = new CommunityTarget();
+        comtarget.setCommunity(new OctetString(community));
+        comtarget.setVersion(snmpVersion);
+        comtarget.setAddress(new UdpAddress(ip.getBroadcastAddress()+ "/" + port));
+        comtarget.setRetries(2);
+        comtarget.setTimeout(1000);
+
+        // Create the PDU object
+        PDU pdu = new PDU();
+        for (String oid : Device.ScanOIDs.values()) { 
+             pdu.add(new VariableBinding(new OID(oid))); 
+        } 
+        pdu.setType(PDU.GET);
+        pdu.setRequestID(new Integer32(1));
+
+        // Create Snmp object for sending data to Agent
+        Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
+        snmp.listen();
+        ResponseListener listener = new ResponseListener() {
+        public void onResponse(ResponseEvent event) {
+       // Always cancel async request when response has been received
+       // otherwise a memory leak is created! Not canceling a request
+       // immediately can be useful when sending a request to a broadcast
+       // address.
+         System.out.println("Received response PDU is: "+event.getResponse());
+        }
+       
+      };
+       snmp.send(pdu, comtarget, null, listener);
    
+    
+    }
+    
     public void importDevices(){
         //importing serialized devices file
         try{
@@ -148,7 +191,7 @@ public class Network {
             System.err.println("Cannot perform input. Class not found."+ ex);
         }
         catch(IOException ex){
-            //if the file Users.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
+            //if the file Devices.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
             addUser("admin","admin");
             saveUsersFile();
@@ -225,15 +268,15 @@ public class Network {
    public static void main (String args[]) throws IOException
    {
        Network n= new Network("192.168.1.2","255.255.255.0");
-       n.checkHostsPing();
-       //n.checkHostsSnmp();
+       //n.checkHostsPing();
+       n.checkHostsSnmp2();
        //test
       // n.importDevices();
        for(int i=0;i<n.Devices.size();i++)
        {
            n.Devices.get(i).printDeviceInformations();
        }
-       n.saveDeviceFile();
+       //n.saveDeviceFile();
    }
 }
 

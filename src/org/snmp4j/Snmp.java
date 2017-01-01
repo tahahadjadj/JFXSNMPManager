@@ -218,6 +218,10 @@ public class Snmp implements Session, CommandResponder {
     }
   }
 
+    public void send(PDU pdu, String broadcastAddress, Object object, ResponseListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
   /**
    * Interface for handling reports.
    *
