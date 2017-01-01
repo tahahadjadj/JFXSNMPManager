@@ -179,6 +179,12 @@ public class Users implements Serializable {
     public static String getLastUser(){
         return usersList.get(0).username;
     }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+    
+    
     
     public static void main(String[] args){
 //        addUser("admin","admin");

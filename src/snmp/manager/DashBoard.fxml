@@ -15,7 +15,7 @@
             <VBox prefHeight="779.0" prefWidth="180.0" BorderPane.alignment="CENTER">
                <children>
                   <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="Devices List" />
-                  <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="Tests" />
+                  <Button mnemonicParsing="false" onAction="#testsButtonAction" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="Tests" />
                   <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="add device" />
                   <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="users managment" />
                </children>
@@ -29,10 +29,9 @@
                         <HBox prefHeight="23.0" prefWidth="292.0">
                            <children>
                               <Label text="Connected devices  :  " />
-                              <Label />
+                              <Label fx:id="devicesNb" />
                            </children>
                         </HBox>
-                        <Label text="number of users" />
                         <HBox prefHeight="23.0" prefWidth="292.0">
                            <children>
                               <Label text="Online devices  :  " />
@@ -54,13 +53,13 @@
                         <HBox prefHeight="23.0" prefWidth="292.0">
                            <children>
                               <Label text="Number of users  : " />
-                              <Label />
+                              <Label fx:id="usersNb" />
                            </children>
                         </HBox>
                         <HBox prefHeight="23.0" prefWidth="292.0">
                            <children>
                               <Label text="last connected user  : " />
-                              <Label />
+                              <Label fx:id="lastUser" />
                            </children>
                         </HBox>
                      </children>

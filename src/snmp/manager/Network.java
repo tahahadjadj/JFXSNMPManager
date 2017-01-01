@@ -42,7 +42,7 @@ public class Network {
   
    IPv4 ip;
    String subnet;
-   private ArrayList<Device> devices = Devices.getDevicesList(); //contains the network devices
+   private ArrayList<Device> devices = Devices.getDevicesList(); //contains the network devices // variables should not start with capital letter, a class does, to avoid confusion between a class and a variable
    
    public Network(String ipS, String netMask)
    {

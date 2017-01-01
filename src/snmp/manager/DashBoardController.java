@@ -5,13 +5,21 @@
  */
 package snmp.manager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -21,18 +29,32 @@ import javafx.scene.control.TextField;
 public class DashBoardController implements Initializable {
 
     @FXML
-    private Label username;
-    @FXML
-    private PasswordField password;
-    @FXML
-    private Label message;
+    private Label devicesNb, usersNb, lastUser, username;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        username.setText(Users.currentUser.username);
+        devicesNb.setText(Integer.toString(Devices.getDevicesCount()));
+        usersNb.setText(Integer.toString(Users.getUsersCount()));
+        lastUser.setText(Users.getLastUser());
+        username.setText(Users.getCurrentUser().username);
     }    
+    
+    @FXML
+    private void testsButtonAction(ActionEvent ae){
+        System.out.println("checking user");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Tests.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = SNMPManager.mainStage;
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
 }
