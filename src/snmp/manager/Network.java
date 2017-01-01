@@ -43,7 +43,7 @@ public class Network {
   
    IPv4 ip;
    String subnet;
-   private ArrayList<Device> Devices = new ArrayList<Device>(); //contains the network devices
+   private ArrayList<Device> devices = Devices.getDevicesList(); //contains the network devices // variables should not start with capital letter, a class does, to avoid confusion between a class and a variable
    
    public Network(String ipS, String netMask)
    {
@@ -58,7 +58,7 @@ public class Network {
        for (int i=0;i<availableIPs.size();i++){
        if (InetAddress.getByName(availableIPs.get(i)).isReachable(timeout)){
            System.out.println(availableIPs.get(i) + " is reachable");
-           Devices.add(new Device(availableIPs.get(i))); //add reachable devices
+           devices.add(new Device(availableIPs.get(i))); //add reachable devices
            
        }
     }
@@ -176,9 +176,9 @@ public class Network {
             ObjectInputStream input = new ObjectInputStream (file);
             try{
               //deserialize the List
-              Devices = (ArrayList<Device>)input.readObject();
+              devices = (ArrayList<Device>)input.readObject();
               //display its data
-              for(Device dv: Devices){
+              for(Device dv: devices){
                     System.out.println("Recovered device: " + dv.ipAdress);
               }
             }
@@ -206,7 +206,7 @@ public class Network {
             FileOutputStream file = new FileOutputStream("Devices.ser");
             ObjectOutputStream output = new ObjectOutputStream(file);
             try{
-              output.writeObject(Devices);
+              output.writeObject(devices);
             }
             finally{
               output.close();
@@ -241,15 +241,15 @@ public class Network {
      */
     public Device getDevice(String ip){
         int i;
-        for(i=0; (i<Devices.size())?!Devices.get(i).ipAdress.equals(ip):false; i++){ 
-                System.out.println("searching for device "+i+"/"+Devices.size());
+        for(i=0; (i<devices.size())?!devices.get(i).ipAdress.equals(ip):false; i++){ 
+                System.out.println("searching for device "+i+"/"+devices.size());
             }
-        if(i==Devices.size()){
+        if(i==devices.size()){
             System.out.println("device not found");
             return null;
         }
         else
-            return Devices.get(i);
+            return devices.get(i);
     }
     
     /**
@@ -257,11 +257,11 @@ public class Network {
      * @return int : number of created devices
      */
     public int getDevicesCount(){
-        return Devices.size();
+        return devices.size();
     }
     
     public String getLastDevice(){
-        return Devices.get(0).ipAdress;
+        return devices.get(0).ipAdress;
     }
     
    //Main class
@@ -272,9 +272,9 @@ public class Network {
        n.checkHostsSnmp2();
        //test
       // n.importDevices();
-       for(int i=0;i<n.Devices.size();i++)
+       for(int i=0;i<n.devices.size();i++)
        {
-           n.Devices.get(i).printDeviceInformations();
+           n.devices.get(i).printDeviceInformations();
        }
        //n.saveDeviceFile();
    }
