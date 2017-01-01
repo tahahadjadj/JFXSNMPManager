@@ -115,7 +115,7 @@ public class Network {
                         VariableBinding vb = (VariableBinding) vbs.get(j); 
                         d.oids.put(vb.getOid().toString(), vb.getVariable().toString()); 
                      }
-                    Devices.add(d); //add reachable devices
+                     devices.add(new Device(availableIPs.get(i))); //add reachable devices
                 }
                
             }
