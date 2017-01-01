@@ -15,6 +15,8 @@ public class Device implements Serializable{
     
     String ipAdress;
     String alias;
+    public String status = "offline";
+    
     Map<String, String> oids; //oids values
      public static final Map<String, String> ScanOIDs = new HashMap<String, String>(); 
     static { 
