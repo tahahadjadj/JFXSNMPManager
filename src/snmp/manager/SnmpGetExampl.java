@@ -27,21 +27,18 @@ public class SnmpGetExampl{
     
     
   
-    private static String ipAddress = "192.168.1.3";
+    private static String ipAddress = "192.168.56.104";
 
     private static String port = "161";
 
 // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
     private static String oidValue = "1.3.6.1.2.1.1.5.0"; // ends with 0 for scalar object
 
-    private static int snmpVersion = SnmpConstants.version1;
+    private static int snmpVersion = SnmpConstants.version2c;
 
     private static String community="public";
     public static void main(String[] args) throws Exception{
         System.out.println("SNMP GET Demo");
-        
-        
-         System.out.println("hello1");
 
         // Create Target Address object
         CommunityTarget comtarget = new CommunityTarget();
@@ -104,5 +101,5 @@ public class SnmpGetExampl{
 //SNMP GET Demo
 //Sending Request to Agent...
 //Got Response from Agent
-//Snmp Get Response = [1.3.6.1.2.1.1.1.0 = Test Agent Simulator]
+//Snmp Get Response = [1.3.6.1.2.1.1.5.0 = ubuntu]
 //</editor-fold>

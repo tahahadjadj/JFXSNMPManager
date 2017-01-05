@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,8 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="snmp.manager.TestsController">
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snmp.manager.TestsController">
    <children>
       <BorderPane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -29,13 +29,15 @@
                   </HBox>
                   <ToolBar prefHeight="6.0" prefWidth="1200.0">
                     <items>
-                      <Button mnemonicParsing="false" text="run" />
-                        <Button mnemonicParsing="false" text="stop" />
-                        <Button mnemonicParsing="false" text="stop" />
+                      <Button mnemonicParsing="false" onAction="#runTestButtonAction" text="run" />
+                        <Button mnemonicParsing="false" onAction="#stopTestButtonAction" text="stop" />
+                        <ComboBox fx:id="tests" prefWidth="150.0" promptText="TestType" />
                         <Line rotate="90.0" startX="30.0" stroke="#979797" />
-                        <TextField promptText="IP address" />
-                        <TextField promptText="name" />
-                        <Button mnemonicParsing="false" text="add device" />
+                        <TextField fx:id="ipField" promptText="IP address" />
+                        <TextField fx:id="aliasField" promptText="name" />
+                        <Button mnemonicParsing="false" onAction="#addDeviceButtonAction" text="add device" />
+                        <Line rotate="90.0" startX="30.0" stroke="#979797" />
+                        <Button mnemonicParsing="false" onAction="#clrTestButtonAction" text="Clear Table" />
                     </items>
                   </ToolBar>
                </children>
@@ -44,12 +46,13 @@
          <center>
             <TableView fx:id="devicesTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <columns>
-                  <TableColumn fx:id="statusCol" minWidth="0.0" prefWidth="193.0" text="Status" />
-                  <TableColumn fx:id="nameCol" minWidth="0.0" prefWidth="214.0" text="Name" />
-                  <TableColumn fx:id="oidCol" prefWidth="233.0" text="OID" />
-                  <TableColumn fx:id="ipCol" prefWidth="192.0" text="IP" />
-                  <TableColumn fx:id="testCol" prefWidth="130.0" text="Test Type" />
-                  <TableColumn fx:id="mibCol" prefWidth="237.0" text="MIB" />
+                  <TableColumn fx:id="rawCol" minWidth="0.0" prefWidth="35.0" text="n" />
+                  <TableColumn fx:id="statusCol" minWidth="0.0" prefWidth="154.0" text="Status" />
+                  <TableColumn fx:id="nameCol" minWidth="0.0" prefWidth="215.0" text="Name" />
+                  <TableColumn fx:id="oidCol" prefWidth="211.0" text="OID" />
+                  <TableColumn fx:id="ipCol" prefWidth="196.0" text="IP" />
+                  <TableColumn fx:id="testCol" prefWidth="202.0" text="Test Result" />
+                  <TableColumn fx:id="mibCol" prefWidth="185.0" text="MIB" />
                </columns>
             </TableView>
          </center>
