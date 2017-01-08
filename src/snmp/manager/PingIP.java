@@ -13,9 +13,10 @@ import java.util.Iterator;
 
 public class PingIP {
 
-    private String ip;
-    private boolean replied = true;
-    private ArrayList<String>  output = new ArrayList();
+    private String ip; // the IP address to ping
+    private boolean replied = true; // false is no answer was recieved
+    private ArrayList<String>  output = new ArrayList(); // the ping response will be stored here, every element of the list is a line
+    
   public static void runSystemCommand(String command) {
 
 		try {
@@ -34,25 +35,45 @@ public class PingIP {
 		}
 	}
 
-
+    /**
+     *
+     * @param ip the IP address to ping
+     */
     public PingIP(String ip) {
         this.ip = ip;
     }
     public PingIP() {
     }
 
+    /**
+     *
+     * @param ip the IP address to ping
+     */
     public void setIp(String ip) {
         this.ip = ip;
     }
 
+    /**
+     *
+     * @return String : the IP address to ping
+     */
     public String getIp() {
         return ip;
     }
 
+    /**
+     *
+     * @return String : the 3nd line of the reply if the ping was successful, or the 1st line if there was an error, cuz these lines have the error message or the success message
+     */
     public String getAnswer() {
         return (output.size()>1)?output.get(2): output.get(1);
     }
     
+    /**
+     *
+     * @param n 
+     * @return String : get the specified line of the answer
+     */
     public String getAnswerLine(int n) {
         return ((n<output.size())?output.get(n):"error line doesnt exist");
     }
@@ -61,7 +82,10 @@ public class PingIP {
         return replied;
     }
     
-        
+    /**
+     *  runs the ping command to the IP and stores the answer in the arraylist output 
+     * @return the whole answer
+     */
     public String run(){
         int i =0;
         String outputStram = "";
