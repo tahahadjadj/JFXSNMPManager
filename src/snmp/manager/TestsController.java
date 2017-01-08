@@ -5,8 +5,12 @@
  */
 package snmp.manager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +26,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.snmp4j.CommunityTarget;
+import org.snmp4j.PDU;
+import org.snmp4j.Snmp;
+import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.Integer32;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.VariableBinding;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 /**
  * FXML Controller class
@@ -35,7 +50,7 @@ public class TestsController implements Initializable {
     @FXML
     private TableView<Element> devicesTable;
     @FXML
-    private TableColumn statusCol, nameCol, oidCol, ipCol, testCol, mibCol;
+    private TableColumn statusCol, nameCol, oidCol, ipCol, testCol, mibCol, rawCol;
     @FXML
     private ComboBox tests;
     @FXML
@@ -65,6 +80,10 @@ public class TestsController implements Initializable {
                 new PropertyValueFactory<>("IP"));
         testCol.setCellValueFactory(
                 new PropertyValueFactory<>("TestResult"));
+        rawCol.setCellValueFactory(
+                new PropertyValueFactory<>("number"));
+        oidCol.setCellValueFactory(
+                new PropertyValueFactory<>("OID"));
         devicesTable.setItems(tableLines);
         
         tableLines.add(new Element("ubuntu server", "192.168.56.104", "N/A", testValue));
@@ -82,10 +101,11 @@ public class TestsController implements Initializable {
     }
     
     public class Element {
+        private SimpleStringProperty number;
         private SimpleStringProperty name;
         private SimpleStringProperty IP;
         private SimpleStringProperty status;
-        private SimpleStringProperty OID;
+        private SimpleStringProperty OID = new SimpleStringProperty("1.3.6.1.2.1.1.1.0") ;
         private SimpleStringProperty TestResult;
         private SimpleStringProperty MIB;
 
@@ -99,6 +119,7 @@ public class TestsController implements Initializable {
             this.IP = new SimpleStringProperty(IP);
             this.status = new SimpleStringProperty(status);
             this.TestResult = new SimpleStringProperty(testType);
+            this.number = new SimpleStringProperty(String.valueOf(tableLines.size()+1));
         }
         public String getIP() {
             return IP.get();
@@ -106,6 +127,14 @@ public class TestsController implements Initializable {
 
         public void setIP(String IP) {
             this.IP = new SimpleStringProperty(IP);
+        }
+        
+        public String getNumber() {
+            return number.get();
+        }
+
+        public void setNumber(String nb) {
+            this.number = new SimpleStringProperty(nb);
         }
 
         public String getName() {
@@ -128,8 +157,8 @@ public class TestsController implements Initializable {
             return MIB;
         }
 
-        public SimpleStringProperty getOID() {
-            return OID;
+        public String getOID() {
+            return OID.get();
         }
 
         public String getTestResult() {
@@ -175,12 +204,13 @@ public class TestsController implements Initializable {
             });
         }else{
             //snmpGet test comming soon
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("SNMP Get not test not implemented yet");
-
-            alert.showAndWait();
+            snmpGet("1.3.6.1.2.1.1.1.0");
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("erreur");
+//            alert.setHeaderText(null);
+//            alert.setContentText("SNMP Get not test not implemented yet");
+//
+//            alert.showAndWait();
         }
     }
     @FXML
@@ -190,6 +220,82 @@ public class TestsController implements Initializable {
     @FXML
     private void clrTestButtonAction(ActionEvent ae){
         tableLines.clear();
+        devicesTable.refresh();
+    }
+    
+    
+    public void snmpGet(String oidValue){
+        String port = "161";
+        int snmpVersion = SnmpConstants.version2c;
+        String community="public";
+        
+        
+            tableLines.parallelStream().forEach((Element line) -> {
+                try {
+                    line.setOID(oidValue);
+                    // Create Target Address object
+                    CommunityTarget comtarget = new CommunityTarget();
+                    comtarget.setCommunity(new OctetString(community));
+                    comtarget.setVersion(snmpVersion);
+                    comtarget.setAddress(new UdpAddress(line.getIP() + "/" + port));
+                    comtarget.setRetries(2);
+                    comtarget.setTimeout(1000);
+
+                    // Create the PDU object
+                    PDU pdu = new PDU();
+                    pdu.add(new VariableBinding(new OID(oidValue)));
+                    pdu.setType(PDU.GET);
+                    pdu.setRequestID(new Integer32(1));
+                    
+                    
+                    // Create Snmp object for sending data to Agent
+                    Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
+                    snmp.listen();
+                    System.out.println("Sending Request to Agent...");
+                    ResponseEvent response = snmp.send(pdu, comtarget);
+
+                    // Process Agent Response
+                    if (response.getResponse() != null){
+
+                        System.out.println("Got Response from Agent");
+                        PDU responsePDU = response.getResponse();
+                        if (responsePDU != null){
+
+                            int errorStatus = responsePDU.getErrorStatus();
+                            int errorIndex = responsePDU.getErrorIndex();
+                            String errorStatusText = responsePDU.getErrorStatusText();
+
+                            if (errorStatus == PDU.noError){
+                                line.setTestResult(responsePDU.getVariableBindings().toString().substring(responsePDU.getVariableBindings().toString().indexOf("=")+1));
+                                System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+                                line.setStatus("online");
+                            }
+                            else{
+                                line.setTestResult("Error: Request Failed \n"+"Error Status = " + errorStatus+"\n"+"Error Index = " + errorIndex+"\n"+"Error Status Text = " + errorStatusText);
+                                System.out.println("Error: Request Failed" );
+                                System.out.println("Error Status = " + errorStatus);
+                                System.out.println("Error Index = " + errorIndex);
+                                System.out.println("Error Status Text = " + errorStatusText);
+                                line.setStatus("warning");
+                            }
+                        }
+                        else{
+                            line.setTestResult("Error: Response PDU is null");
+                            System.out.println("Error: Response PDU is null");
+                            line.setStatus("warning");
+                        }
+                    }
+                    else{
+                        line.setTestResult("Error: Agent Timeout... ");
+                        System.out.println("Error: Agent Timeout... ");
+                        line.setStatus("warning");
+                    }
+                    snmp.close();
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(TestsController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        });
         devicesTable.refresh();
     }
     
