@@ -100,6 +100,16 @@ public class Devices  implements Serializable {
         return 1;
     }
     
+    public static Device addDevice(String alias, String IP ){
+        Device newDevice = getDevice(IP);
+        if(newDevice==null){
+            newDevice=new Device(IP);
+            devicesList.add(newDevice);
+        }
+        newDevice.alias=alias;
+        return newDevice;
+    }
+    
     /**
      * looking for a device by its IP address
      *

@@ -18,14 +18,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -53,6 +58,8 @@ public class TestsController implements Initializable {
     private TableColumn statusCol, nameCol, oidCol, ipCol, testCol, mibCol, rawCol;
     @FXML
     private ComboBox tests;
+    @FXML
+    private CheckBox addToDevicesList;
     @FXML
     private TextField ipField, aliasField;
     @FXML
@@ -86,9 +93,13 @@ public class TestsController implements Initializable {
                 new PropertyValueFactory<>("OID"));
         devicesTable.setItems(tableLines);
         
-        tableLines.add(new Element("ubuntu server", "192.168.56.104", "N/A", testValue));
-        tableLines.add(new Element("cisco router", "192.168.56.105", "N/A", testValue));
-        tableLines.add(new Element("host", "192.168.56.102", "N/A", testValue));
+        Devices.addDevice("ubuntu server", "192.168.56.104");
+        Devices.addDevice("cisco router", "192.168.56.105");
+        Devices.addDevice("host", "192.168.56.102");
+        
+        Devices.getDevicesList().stream().forEach(device ->{
+            tableLines.add(new Element(device.alias, device.ipAdress, device.status, testValue, device));
+        });
         tableLines.add(new Element("unknown", "192.168.56.103", "N/A", testValue));
         tableLines.add(new Element("not assigned", "192.168.56.106", "N/A", testValue));
         
@@ -108,6 +119,8 @@ public class TestsController implements Initializable {
         private SimpleStringProperty OID = new SimpleStringProperty("1.3.6.1.2.1.1.1.0") ;
         private SimpleStringProperty TestResult;
         private SimpleStringProperty MIB;
+        private Device device;
+        private boolean registered = false;
 
         public Element(String name, String IP, String status) {
             this.name = new SimpleStringProperty(name);
@@ -121,6 +134,29 @@ public class TestsController implements Initializable {
             this.TestResult = new SimpleStringProperty(testType);
             this.number = new SimpleStringProperty(String.valueOf(tableLines.size()+1));
         }
+        public Element(String name, String IP, String status, String testType, Device device) {
+            this.name = new SimpleStringProperty(name);
+            this.IP = new SimpleStringProperty(IP);
+            this.status = new SimpleStringProperty(status);
+            this.TestResult = new SimpleStringProperty(testType);
+            this.number = new SimpleStringProperty(String.valueOf(tableLines.size()+1));
+            this.device = device;
+            registered = true;
+        }
+
+        public boolean isRegistered() {
+            return registered;
+        }
+
+        public void setDevice(Device device) {
+            this.device = device;
+            registered = true;
+        }
+
+        public Device getDevice() {
+            return device;
+        }
+        
         public String getIP() {
             return IP.get();
         }
@@ -186,7 +222,10 @@ public class TestsController implements Initializable {
     private void addDeviceButtonAction(ActionEvent ae){
         if(testValue!=""){
             System.out.println("adding : "+aliasField.getText()+" "+ipField.getText()+" "+testValue);
-            tableLines.add(new Element(aliasField.getText(), ipField.getText(), "N/A", testValue));
+            if (addToDevicesList.isSelected())
+                tableLines.add(new Element(aliasField.getText(), ipField.getText(), "N/A", testValue,Devices.addDevice(ipField.getText(),aliasField.getText())));
+            else
+                tableLines.add(new Element(aliasField.getText(), ipField.getText(), "N/A", testValue));
         }
     }
     @FXML
@@ -198,6 +237,8 @@ public class TestsController implements Initializable {
                 System.out.println("start ping "+line.getIP());
                 p.run();
                 line.setStatus((p.isReplied())?"online":"offline");
+                if(line.isRegistered())
+                    if(p.isReplied())line.device.status="online";else line.device.status="offline";
                 line.setTestResult(p.getAnswer());
                 System.out.println("end ping "+line.getIP()+" result "+p.isReplied()+ " answer "+p.getAnswer());
                 devicesTable.refresh();
@@ -276,19 +317,28 @@ public class TestsController implements Initializable {
                                 System.out.println("Error Status = " + errorStatus);
                                 System.out.println("Error Index = " + errorIndex);
                                 System.out.println("Error Status Text = " + errorStatusText);
-                                line.setStatus("warning");
+                                line.setStatus("warning"); 
+                                if(line.isRegistered())
+                                    if(!line.device.status.matches("offline"))
+                                        line.device.status="warning";
                             }
                         }
                         else{
                             line.setTestResult("Error: Response PDU is null");
                             System.out.println("Error: Response PDU is null");
-                            line.setStatus("warning");
+                            line.setStatus("warning"); 
+                            if(line.isRegistered())
+                                if(!line.device.status.matches("offline"))
+                                    line.device.status="warning";
                         }
                     }
                     else{
                         line.setTestResult("Error: Agent Timeout... ");
                         System.out.println("Error: Agent Timeout... ");
-                        line.setStatus("warning");
+                        line.setStatus("warning"); 
+                        if(line.isRegistered())
+                            if(!line.device.status.matches("offline"))
+                              line.device.status="warning";
                     }
                     snmp.close();
                     
@@ -297,6 +347,21 @@ public class TestsController implements Initializable {
                 }
         });
         devicesTable.refresh();
+    }
+    
+    @FXML
+    private void returnButtonAction(ActionEvent ae){
+        System.out.println("devicesList");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = SNMPManager.mainStage;
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     //<editor-fold defaultstate="collapsed" desc="code for cell color changement">

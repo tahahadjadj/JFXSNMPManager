@@ -17,8 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
@@ -26,27 +24,25 @@ import javafx.stage.Stage;
  *
  * @author HP
  */
-public class DashBoardController implements Initializable {
+public class DevicesListController implements Initializable {
 
     @FXML
-    private Label devicesNb, usersNb, lastUser, username;
+    private Label username;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        devicesNb.setText(Integer.toString(Devices.getDevicesCount()));
-        usersNb.setText(Integer.toString(Users.getUsersCount()));
-        lastUser.setText(Users.getLastUser());
         username.setText(Users.getCurrentUser().username);
+        // TODO
     }    
     
+    
     @FXML
-    private void testsButtonAction(ActionEvent ae){
-        System.out.println("checking user");
+    private void returnButtonAction(ActionEvent ae){
+        System.out.println("devicesList");
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Tests.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
             Scene scene = new Scene(root);
             Stage stage = SNMPManager.mainStage;
             stage.setScene(scene);
@@ -57,18 +53,4 @@ public class DashBoardController implements Initializable {
         
     }
     
-    @FXML
-    private void devicessButtonAction(ActionEvent ae){
-        System.out.println("devicesList");
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("DevicesList.fxml"));
-            Scene scene = new Scene(root);
-            Stage stage = SNMPManager.mainStage;
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
 }

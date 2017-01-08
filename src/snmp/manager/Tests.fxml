@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -22,7 +23,10 @@
                <children>
                   <HBox prefHeight="24.0" prefWidth="1200.0" style="-fx-background-color: #CCCCCC;">
                      <children>
-                        <Pane prefHeight="24.0" prefWidth="403.0" />
+                        <Pane prefHeight="24.0" prefWidth="403.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#returnButtonAction" scaleY="0.8" text="return" translateY="-5.0" />
+                           </children></Pane>
                         <Label text="Laghouat University SNMP Manager     " />
                         <Label fx:id="username" text="Username" />
                      </children>
@@ -36,6 +40,7 @@
                         <TextField fx:id="ipField" promptText="IP address" />
                         <TextField fx:id="aliasField" promptText="name" />
                         <Button mnemonicParsing="false" onAction="#addDeviceButtonAction" text="add device" />
+                        <CheckBox fx:id="addToDevicesList" mnemonicParsing="false" text="add to devices list" />
                         <Line rotate="90.0" startX="30.0" stroke="#979797" />
                         <Button mnemonicParsing="false" onAction="#clrTestButtonAction" text="Clear Table" />
                     </items>
