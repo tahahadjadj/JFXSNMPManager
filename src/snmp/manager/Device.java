@@ -9,12 +9,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import snmp.manager.Groups.Group;
 
 
 public class Device implements Serializable{
     
     String ipAdress;
     String alias;
+    private Group group;
     public String status = "offline";
     
     Map<String, String> oids; //oids values
@@ -37,6 +39,22 @@ public class Device implements Serializable{
         this.alias=alias;
         oids = new HashMap<String, String>();
     }
+      public Device(String ip, String alias, String groupName)
+    {
+        ipAdress=ip;
+        this.alias=alias;
+        oids = new HashMap<String, String>();
+        group=new Group(groupName);
+    }
+      public void setGroup(String groupName)
+      {
+          group=new Group(groupName);
+      }
+       public String getGroup()
+      {
+          return group.getName();
+      }
+    
     
     
     public void printDeviceInformations()

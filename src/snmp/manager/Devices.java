@@ -136,7 +136,24 @@ public class Devices  implements Serializable {
     public static ArrayList<Device> getDevicesList() {
         return devicesList;
     }
-    
+    /**
+     * get devices list of specific group
+     * 
+     * @param groupName 
+     * @return 
+     */
+    public static ArrayList<Device> getGroupDevices(String groupName)
+         {
+             ArrayList<Device> groupDevices = new ArrayList<>() ; 
+            for(int i=0;i<devicesList.size(); i++)
+            {
+                if(devicesList.get(i).getGroup().equals(groupName))
+                {
+                    groupDevices.add(devicesList.get(i));
+                }
+            }
+            return groupDevices;
+         }
     /**
      *
      * @return int : devices number

@@ -193,7 +193,7 @@ public class Network {
         catch(IOException ex){
             //if the file Devices.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
-            addUser("admin","admin");
+            addUser("admin","admin","admin");
             saveUsersFile();
             System.err.println("new file Users.ser created");
         }

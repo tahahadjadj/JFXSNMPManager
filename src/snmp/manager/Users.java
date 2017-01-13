@@ -11,6 +11,7 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.*;
+import snmp.manager.Groups.Group;
 
 
 /**
@@ -21,7 +22,8 @@ public class Users implements Serializable {
     
     public static class User implements Serializable {
         public String username;
-        public byte password[];          //hached password
+        public byte password[]; //hached password    
+        public ArrayList<Group> groupHeBelongsTo = new ArrayList<>() ;//contains refrences to the groups user belongs to  
         
         //other caracteristics to be added later
     }
@@ -57,7 +59,7 @@ public class Users implements Serializable {
         catch(IOException ex){
             //if the file Users.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
-            addUser("admin","admin");
+            addUser("admin","admin","admin");
             saveUsersFile();
             System.err.println("new file Users.ser created");
         }
@@ -92,7 +94,7 @@ public class Users implements Serializable {
      * @param password
      * @return 1 if created successfully, -1 if user exists
      */
-    public static int addUser(String username, String password ){
+    public static int addUser(String username, String password, String groupName ){
         try {
             
             User newUser = getUser(username);
@@ -103,6 +105,11 @@ public class Users implements Serializable {
                 md.update(password.getBytes());
                 newUser.username = username;
                 newUser.password = md.digest();
+                Group group=Groups.getGroup(groupName);
+                if(group!=null){
+                    newUser.groupHeBelongsTo.add(group);
+                    System.out.println("added to the group");
+                }
                 usersList.add(newUser);
             }
             else{
@@ -167,6 +174,76 @@ public class Users implements Serializable {
         else
             return usersList.get(i);
     }
+    /**
+     * add user to a group
+     *
+     * @param username
+     * @param groupName
+     */
+    public static void addUserToGroup(String userName, String groupName)
+    {
+        User user=getUser(userName);
+        if(user!=null)
+        {
+            Group group=Groups.getGroup(groupName);
+            if(group!=null)
+            {
+                user.groupHeBelongsTo.add(group);
+                System.out.println(userName+"added to the group"+groupName);
+            }
+            else
+            {
+                System.out.println("The group doesn't exist");
+              
+            }
+            
+        }
+    }
+     /**
+     * remove user from a group
+     *
+     * @param username
+     * @param groupName
+     */
+    public static void removeUserFromAGroup(String userName, String groupName)
+    {
+        User user=getUser(userName);
+        if(user!=null)
+        {
+            int i;
+            for(i=0; (i<user.groupHeBelongsTo.size())?!user.groupHeBelongsTo.get(i).getName().equals(groupName):false; i++){ 
+                System.out.println("searching for group");
+            }
+            if(i!=user.groupHeBelongsTo.size()){
+               user.groupHeBelongsTo.remove(i);
+               System.out.println(userName+"removed from the group"+groupName);
+            }
+            else
+               System.out.println("group not found");
+            }
+    }
+     /**
+     * return members of a a group
+     *
+     * @param groupName
+     * @return 
+     */
+     
+    public static ArrayList<User> getGroupmembers(String groupName)
+         {
+             ArrayList<User> groupMembers = new ArrayList<>() ; 
+            for(int i=0;i<usersList.size(); i++)
+            {
+                int j;
+                for(j=0; (j<usersList.get(i).groupHeBelongsTo.size())?!usersList.get(i).groupHeBelongsTo.get(j).getName().equals(groupName):false; i++){ 
+                }
+                 if(j!=usersList.get(i).groupHeBelongsTo.size()){
+                    groupMembers.add(usersList.get(i));
+                  }
+                
+            }
+            return groupMembers;
+         }
     
     /**
      *
@@ -187,12 +264,14 @@ public class Users implements Serializable {
     
     
     public static void main(String[] args){
-//        addUser("admin","admin");
-//        saveUsersFile();
+        
+         Groups.importGroups();         
+         addUser("admin","admin","admin");
+         saveUsersFile();
 
-        importUsers();
-        checkUser("admin", "admin");
-//        
+         importUsers();
+         checkUser("admin", "admin");
+//       
 //        System.out.println(checkUser("admin", "admin"));
         
     }
