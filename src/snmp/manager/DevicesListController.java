@@ -21,11 +21,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -39,54 +38,21 @@ public class DevicesListController implements Initializable {
     @FXML
     private Label username;
     @FXML
-    private TableView<Device> devicesTable;
-    @FXML
-    private TableColumn nCol= new TableColumn("#");;
-    @FXML
-    private TableColumn<Device, String> deviceCol;
-    @FXML
-    private TableColumn<Device, String> ipCol;
-    @FXML
-    private TableColumn<Device, String> groupCol;
-    @FXML
-    private TableColumn<Device, String> statusCol;
-    @FXML
-    private ObservableList<Device> tableLines = FXCollections.observableArrayList();
+    private FlowPane devicesHolder;
+    
+    
+    public Button b = new Button();
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         username.setText(Users.getCurrentUser().getUsername());
-        
-        nCol.setCellValueFactory(new Callback<CellDataFeatures<Device, String>, ObservableValue<String>>() {
-         @Override public ObservableValue<String> call(CellDataFeatures<Device, String> d) {
-         return new ReadOnlyObjectWrapper(devicesTable.getItems().indexOf(d.getValue()) + "");
-         }
-        });   
-        nCol.setSortable(false);
-        deviceCol.setCellValueFactory(cellData -> cellData.getValue().getAliasProperty());
-        ipCol.setCellValueFactory(cellData -> cellData.getValue().getIpAdressProperty());
-        statusCol.setCellValueFactory(cellData -> cellData.getValue().getStatusProperty());
-        groupCol.setCellValueFactory(cellData -> cellData.getValue().getGroupProperty());
-        devicesTable.setItems(tableLines);
-        
-    
-        System.out.println(Users.getCurrentUser().groupHeBelongsTo.size());
-        
-        for(int i=0; i<Users.getCurrentUser().groupHeBelongsTo.size(); i++)
-        {
-            tableLines.add(new Device("test","192.168.1.3","g2"));
-            String group=Users.getCurrentUser().groupHeBelongsTo.get(i).getName();
-            ArrayList<Device> devices=Devices.getGroupDevices(group);
-            devices.stream().forEach((Device device) ->{
-            tableLines.add(new Device(device.getIpAdress(), device.getAlias(),group));
-            
+        Devices.getDevicesList().stream().forEach(device -> {
+            DeviceIcon deviceIcon = new DeviceIcon(device);
+            devicesHolder.getChildren().add(deviceIcon);
         });
-        }
-       
-       
-        // TODO
     }    
     
     
@@ -105,4 +71,18 @@ public class DevicesListController implements Initializable {
         
     }
     
+    private class DeviceIcon extends Button{
+        private Device device;
+        public DeviceIcon(Device device) {
+            super(device.getAlias());
+            this.device = device;
+            this.setText(device.getAlias()+"\n"+device.getIpAdress());
+        }
+        
+    }
+    
+    @FXML
+    private void discoveryAction(ActionEvent ae){
+        
+    }
 }

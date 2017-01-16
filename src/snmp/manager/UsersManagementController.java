@@ -74,7 +74,10 @@ public class UsersManagementController implements Initializable {
         // TODO
          username.setText(Users.getCurrentUser().getUsername());
          
-         
+         userN.setText("");
+         address.setText("");
+         telephone.setText("");
+         groups.setText("");
          
          nCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
          @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> d) {

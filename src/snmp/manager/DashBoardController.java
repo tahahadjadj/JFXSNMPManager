@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import static snmp.manager.Devices.importDevices;
 
 /**
  * FXML Controller class
@@ -36,6 +37,7 @@ public class DashBoardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        importDevices();
         devicesNb.setText(Integer.toString(Devices.getDevicesCount()));
         usersNb.setText(Integer.toString(Users.getUsersCount()));
         lastUser.setText(Users.getLastUser());

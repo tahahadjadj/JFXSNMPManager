@@ -18,12 +18,12 @@ public class Device implements Serializable{
     
      private String ipAddress;
      private String alias;
-     private String status;
+     private String status = "offline";
      private Group group;
      //not serializable
-     private transient SimpleStringProperty ipAddressProperty;
-     private transient SimpleStringProperty aliasProperty;
-     private transient SimpleStringProperty statusProperty = new SimpleStringProperty("offline");
+//     private transient SimpleStringProperty ipAddressProperty;
+//     private transient SimpleStringProperty aliasProperty;
+//     private transient SimpleStringProperty statusProperty = new SimpleStringProperty("offline");
     
     Map<String, String> oids= new HashMap<String, String>(); //oids values
      public static final Map<String, String> ScanOIDs = new HashMap<String, String>(); 
@@ -38,21 +38,21 @@ public class Device implements Serializable{
     public Device(String ip)
     {
         ipAddress=ip;
-        ipAddressProperty=new SimpleStringProperty(ip);
+//        ipAddressProperty=new SimpleStringProperty(ip);
     }
      public Device(String ip, String alias)
     {
         ipAddress=ip;
-        ipAddressProperty=new SimpleStringProperty(ip);
+//        ipAddressProperty=new SimpleStringProperty(ip);
         this.alias=alias;
-        this.aliasProperty=new SimpleStringProperty(alias);
+//        this.aliasProperty=new SimpleStringProperty(alias);
     }
       public Device(String ip, String alias, String groupName)
     {
         this.ipAddress=ip;
-        ipAddressProperty=new SimpleStringProperty(ip);
+//        ipAddressProperty=new SimpleStringProperty(ip);
         this.alias=alias;
-        this.aliasProperty=new SimpleStringProperty(alias);
+//        this.aliasProperty=new SimpleStringProperty(alias);
         group=new Group(groupName);
     }
       //getters and setters
@@ -75,32 +75,32 @@ public class Device implements Serializable{
        public String getIpAdress(){
            return ipAddress;
        }
-        public StringProperty getIpAdressProperty(){
-           return ipAddressProperty;
-       }
+//        public StringProperty getIpAdressProperty(){
+//           return ipAddressProperty;
+//       }
        public void setIpAdress(String ip){
            ipAddress=ip;
-           this.ipAddressProperty.set(ip);
+//           this.ipAddressProperty.set(ip);
        }
        public String getAlias(){
            return alias;
        }
-       public StringProperty getAliasProperty(){
-           return aliasProperty;
-       }
+//       public StringProperty getAliasProperty(){
+//           return aliasProperty;
+//       }
        public void setAlias(String alias){
            this.alias=alias;
-           this.aliasProperty.set(alias);
+//           this.aliasProperty.set(alias);
        }
        public String getStatus(){
            return status;
        }
-       public StringProperty getStatusProperty(){
-           return statusProperty;
-       }
+//       public StringProperty getStatusProperty(){
+//           return statusProperty;
+//       }
        public void setStatus(String status){
            this.status=status;
-           this.statusProperty.set(status);
+//           this.statusProperty.set(status);
        }
     
     
