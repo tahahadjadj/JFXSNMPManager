@@ -41,7 +41,7 @@ import static snmp.manager.Users.saveUsersFile;
 public class Network {
     
   
-  /* IPv4 ip;
+   IPv4 ip;
    String subnet;
    private ArrayList<Device> devices = Devices.getDevicesList(); //contains the network devices // variables should not start with capital letter, a class does, to avoid confusion between a class and a variable
    
@@ -179,7 +179,7 @@ public class Network {
               devices = (ArrayList<Device>)input.readObject();
               //display its data
               for(Device dv: devices){
-                    System.out.println("Recovered device: " + dv.ipAdress);
+                    System.out.println("Recovered device: " + dv.getIpAdress());
               }
             }
             finally{
@@ -193,7 +193,7 @@ public class Network {
         catch(IOException ex){
             //if the file Devices.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
-            addUser("admin","admin","admin");
+            addUser("admin","admin");
             saveUsersFile();
             System.err.println("new file Users.ser created");
         }
@@ -239,9 +239,9 @@ public class Network {
      *
      * 
      */
-   /* public Device getDevice(String ip){
+    public Device getDevice(String ip){
         int i;
-        for(i=0; (i<devices.size())?!devices.get(i).ipAdress.equals(ip):false; i++){ 
+        for(i=0; (i<devices.size())?!devices.get(i).getIpAdress().equals(ip):false; i++){ 
                 System.out.println("searching for device "+i+"/"+devices.size());
             }
         if(i==devices.size()){
@@ -256,12 +256,12 @@ public class Network {
      *
      * @return int : number of created devices
      */
-   /* public int getDevicesCount(){
+    public int getDevicesCount(){
         return devices.size();
     }
     
     public String getLastDevice(){
-        return devices.get(0).ipAdress;
+        return devices.get(0).getIpAdress();
     }
     
    //Main class
@@ -269,7 +269,7 @@ public class Network {
    {
        Network n= new Network("192.168.1.2","255.255.255.0");
        //n.checkHostsPing();
-       n.checkHostsSnmp2();
+       n.checkHostsSnmp();
        //test
       // n.importDevices();
        for(int i=0;i<n.devices.size();i++)
@@ -277,6 +277,6 @@ public class Network {
            n.devices.get(i).printDeviceInformations();
        }
        //n.saveDeviceFile();
-   }*/
+   }
 }
 

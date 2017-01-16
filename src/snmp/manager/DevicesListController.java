@@ -57,7 +57,7 @@ public class DevicesListController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        username.setText(Users.getCurrentUser().username);
+        username.setText(Users.getCurrentUser().getUsername());
         
         nCol.setCellValueFactory(new Callback<CellDataFeatures<Device, String>, ObservableValue<String>>() {
          @Override public ObservableValue<String> call(CellDataFeatures<Device, String> d) {

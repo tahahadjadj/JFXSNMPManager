@@ -11,6 +11,8 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import snmp.manager.Groups.Group;
 
 
@@ -21,11 +23,61 @@ import snmp.manager.Groups.Group;
 public class Users implements Serializable {
     
     public static class User implements Serializable {
-        public String username;
-        public byte password[]; //hached password    
-        public ArrayList<Group> groupHeBelongsTo = new ArrayList<>() ;//contains refrences to the groups user belongs to  
+        private String username;
+        private byte password[]; //hached password    
+        private String address;
+        private String telephone;
+        public ArrayList<Group> groupHeBelongsTo = new ArrayList<>() ;//contains refrences to the groups user belongs to 
+        //not serializable
+        private transient SimpleStringProperty usernameProperty;
+        private transient SimpleStringProperty addressProperty;
+        private transient SimpleStringProperty telephoneProperty = new SimpleStringProperty("offline");
         
         //other caracteristics to be added later
+        
+        public String getUsername(){
+            
+            return username;
+        }
+         public StringProperty getUsernameProperty(){
+            
+            return usernameProperty;
+        }
+         public void setUsername(String username){
+             this.username=username;
+             this.usernameProperty=new SimpleStringProperty(username);
+             
+         }
+         public String getAddress(){
+            
+            return address;
+        }
+         public StringProperty getAddressProperty(){
+            
+            return addressProperty;
+        }
+         public void setAddress(String address){
+             this.address=address;
+             this.addressProperty=new SimpleStringProperty(address);
+             
+         }
+           public String getTelephone(){
+            
+            return telephone;
+        }
+         public StringProperty getTelephoneProperty(){
+            
+            return telephoneProperty;
+        }
+         public void setTelephone(String telephone){
+             this.telephone=telephone;
+             this.telephoneProperty=new SimpleStringProperty(telephone);
+             
+         }
+         
+         public StringProperty groupHeBelongsTo(){
+             return new SimpleStringProperty(groupHeBelongsTo.toString());
+         } 
     }
     
     private static ArrayList<User> usersList = new ArrayList<>() ; 
@@ -46,6 +98,7 @@ public class Users implements Serializable {
               //display its data
               for(User user: usersList){
                     System.out.println("Recovered user: " + user.username);
+                    user.setUsername(user.username);//to recover the stringProperty
                     for(int i=0; i<user.groupHeBelongsTo.size(); i++)
                     {
                         System.out.println("  groups: ");
@@ -109,7 +162,7 @@ public class Users implements Serializable {
                 // haching the sting password
                 MessageDigest md = MessageDigest.getInstance("MD5");
                 md.update(password.getBytes());
-                newUser.username = username;
+                newUser.setUsername(username);
                 newUser.password = md.digest();
                 usersList.add(newUser);
             }
@@ -245,6 +298,10 @@ public class Users implements Serializable {
             }
             return groupMembers;
          }
+        public static ArrayList<User> getUsersList()
+         {
+            return usersList;
+         }
     
     /**
      *
@@ -267,11 +324,15 @@ public class Users implements Serializable {
     public static void main(String[] args){
         
          Groups.importGroups();         
-         /*addUser("admin","admin");
+        /* addUser("admin","admin");
+         addUser("admin2","admin");
+         addUserToGroup("admin","g1");
          addUserToGroup("admin","admin");
+         addUserToGroup("admin2","admin");
          saveUsersFile();*/
 
          importUsers();
+         System.out.println(usersList.get(0).groupHeBelongsTo.toString());
        
  //        checkUser("admin", "admin");
 //       
