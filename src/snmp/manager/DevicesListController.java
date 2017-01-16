@@ -16,7 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 /**
@@ -28,13 +31,22 @@ public class DevicesListController implements Initializable {
 
     @FXML
     private Label username;
+    @FXML
+    private FlowPane devicesHolder;
+    
+    
+    public Button b = new Button();
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         username.setText(Users.getCurrentUser().username);
-        // TODO
+        Devices.getDevicesList().stream().forEach(device -> {
+            DeviceIcon deviceIcon = new DeviceIcon(device);
+            devicesHolder.getChildren().add(deviceIcon);
+        });
     }    
     
     
@@ -53,4 +65,13 @@ public class DevicesListController implements Initializable {
         
     }
     
+    private class DeviceIcon extends Button{
+        private Device device;
+        public DeviceIcon(Device device) {
+            super(device.alias);
+            this.device = device;
+            this.setText(device.alias+"\n"+device.ipAdress);
+        }
+        
+    }
 }
