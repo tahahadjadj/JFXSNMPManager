@@ -22,7 +22,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -93,9 +92,6 @@ public class TestsController implements Initializable {
                 new PropertyValueFactory<>("OID"));
         devicesTable.setItems(tableLines);
         
-        Devices.addDevice("ubuntu server", "192.168.56.104");
-        Devices.addDevice("cisco router", "192.168.56.105");
-        Devices.addDevice("host", "192.168.56.102");
         
         Devices.getDevicesList().stream().forEach(device ->{
             tableLines.add(new Element(device.getAlias(), device.getIpAdress(), device.getStatus(), testValue, device));

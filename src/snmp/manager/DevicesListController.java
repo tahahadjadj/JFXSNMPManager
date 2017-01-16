@@ -80,4 +80,9 @@ public class DevicesListController implements Initializable {
         }
         
     }
+    
+    @FXML
+    private void discoveryAction(ActionEvent ae){
+        
+    }
 }
