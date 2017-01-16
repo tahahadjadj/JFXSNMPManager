@@ -137,7 +137,7 @@ public class PingIP {
         
 	public static void main(String[] args) {
 		
-            String ip = "192.168.56.106";
+            String ip = "192.168.1.3";
             PingIP p = new PingIP(ip);
 //            System.out.println(p.run());
             p.run();

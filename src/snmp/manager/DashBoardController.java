@@ -41,7 +41,7 @@ public class DashBoardController implements Initializable {
         devicesNb.setText(Integer.toString(Devices.getDevicesCount()));
         usersNb.setText(Integer.toString(Users.getUsersCount()));
         lastUser.setText(Users.getLastUser());
-        username.setText(Users.getCurrentUser().username);
+        username.setText(Users.getCurrentUser().getUsername());
     }    
     
     @FXML
@@ -64,6 +64,20 @@ public class DashBoardController implements Initializable {
         System.out.println("devicesList");
         try {
             Parent root = FXMLLoader.load(getClass().getResource("DevicesList.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = SNMPManager.mainStage;
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+     @FXML
+    private void usersButtonAction(ActionEvent ae){
+        System.out.println("usersList");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("UsersManagement.fxml"));
             Scene scene = new Scene(root);
             Stage stage = SNMPManager.mainStage;
             stage.setScene(scene);

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snmp.manager.DashBoardController">
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snmp.manager.DashBoardController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -17,7 +17,7 @@
                   <Button mnemonicParsing="false" onAction="#devicessButtonAction" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="Devices List" />
                   <Button mnemonicParsing="false" onAction="#testsButtonAction" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="Tests" />
                   <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="add device" />
-                  <Button mnemonicParsing="false" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="users managment" />
+                  <Button mnemonicParsing="false" onAction="#usersButtonAction" prefWidth="1200.0" styleClass="btn" stylesheets="@Buttons%20Style.css" text="users managment" />
                </children>
             </VBox>
          </left>

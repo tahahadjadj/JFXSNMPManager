@@ -72,7 +72,7 @@ public class TestsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        username.setText(Users.getCurrentUser().username);
+        username.setText(Users.getCurrentUser().getUsername());
         
         tests.getItems().addAll("Ping","SNMPGet");
         

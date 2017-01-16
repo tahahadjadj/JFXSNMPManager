@@ -48,7 +48,7 @@ public class DevicesListController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        username.setText(Users.getCurrentUser().username);
+        username.setText(Users.getCurrentUser().getUsername());
         Devices.getDevicesList().stream().forEach(device -> {
             DeviceIcon deviceIcon = new DeviceIcon(device);
             devicesHolder.getChildren().add(deviceIcon);

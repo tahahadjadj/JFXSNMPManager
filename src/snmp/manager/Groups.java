@@ -50,7 +50,10 @@ public class Groups implements Serializable{
            return nameProperty;
          }
          
-        
+         public String toString(){
+             return name;
+         }
+              
          
     }
     
@@ -170,7 +173,7 @@ public class Groups implements Serializable{
         addGroup("g1");
         addGroup("g2");
         saveGroupsFile();
-        importGroups();
-        getGroup("admin");
+        /*importGroups();
+        getGroup("admin");*/
     }
 }
