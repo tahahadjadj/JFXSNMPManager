@@ -61,7 +61,9 @@ public class SNMPManagerController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Groups.importGroups();
         Users.importUsers();
+        Devices.importDevices();           
     }    
     
 }

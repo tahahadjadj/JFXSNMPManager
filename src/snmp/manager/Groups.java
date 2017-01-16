@@ -16,6 +16,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import snmp.manager.Users.User;
 
 
@@ -25,18 +27,27 @@ public class Groups implements Serializable{
     public static class Group implements Serializable{
         
          private String name;
-         
+         //not serializable
+         private transient StringProperty nameProperty;
+         //constructor
          public Group(String name)
          {
            this.name=name;
+           nameProperty=new SimpleStringProperty(name);
          }
+         //setters and getters
          public void setName(String name)
          {
            this.name=name;
+           this.nameProperty.set(name);
          }
          public String getName()
          {
            return name;
+         }
+         public StringProperty getNameProperty()
+         {
+           return nameProperty;
          }
          
         
@@ -155,8 +166,10 @@ public class Groups implements Serializable{
    
     public static void main(String args[])
     {
-        //addGroup("admin");
-        //saveGroupsFile();
+        addGroup("admin");
+        addGroup("g1");
+        addGroup("g2");
+        saveGroupsFile();
         importGroups();
         getGroup("admin");
     }
