@@ -7,9 +7,14 @@ package snmp.manager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -68,9 +74,9 @@ public class DevicesListController implements Initializable {
     private class DeviceIcon extends Button{
         private Device device;
         public DeviceIcon(Device device) {
-            super(device.alias);
+            super(device.getAlias());
             this.device = device;
-            this.setText(device.alias+"\n"+device.ipAdress);
+            this.setText(device.getAlias()+"\n"+device.getIpAdress());
         }
         
     }

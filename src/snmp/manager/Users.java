@@ -46,6 +46,12 @@ public class Users implements Serializable {
               //display its data
               for(User user: usersList){
                     System.out.println("Recovered user: " + user.username);
+                    for(int i=0; i<user.groupHeBelongsTo.size(); i++)
+                    {
+                        System.out.println("  groups: ");
+                        System.out.println("  "+user.groupHeBelongsTo.get(i).getName());
+                    }
+                    System.out.println();
               }
             }
             finally{
@@ -59,7 +65,7 @@ public class Users implements Serializable {
         catch(IOException ex){
             //if the file Users.ser doesnt exist in case of a 1st execution for example the file will be created with the user admin 
             System.err.println("Cannot perform input."+ ex);
-            addUser("admin","admin","admin");
+            addUser("admin","admin");
             saveUsersFile();
             System.err.println("new file Users.ser created");
         }
@@ -94,7 +100,7 @@ public class Users implements Serializable {
      * @param password
      * @return 1 if created successfully, -1 if user exists
      */
-    public static int addUser(String username, String password, String groupName ){
+    public static int addUser(String username, String password){
         try {
             
             User newUser = getUser(username);
@@ -105,11 +111,6 @@ public class Users implements Serializable {
                 md.update(password.getBytes());
                 newUser.username = username;
                 newUser.password = md.digest();
-                Group group=Groups.getGroup(groupName);
-                if(group!=null){
-                    newUser.groupHeBelongsTo.add(group);
-                    System.out.println("added to the group");
-                }
                 usersList.add(newUser);
             }
             else{
@@ -189,7 +190,7 @@ public class Users implements Serializable {
             if(group!=null)
             {
                 user.groupHeBelongsTo.add(group);
-                System.out.println(userName+"added to the group"+groupName);
+                System.out.println(userName+" added to the group "+groupName);
             }
             else
             {
@@ -266,11 +267,13 @@ public class Users implements Serializable {
     public static void main(String[] args){
         
          Groups.importGroups();         
-         addUser("admin","admin","admin");
-         saveUsersFile();
+         /*addUser("admin","admin");
+         addUserToGroup("admin","admin");
+         saveUsersFile();*/
 
          importUsers();
-         checkUser("admin", "admin");
+       
+ //        checkUser("admin", "admin");
 //       
 //        System.out.println(checkUser("admin", "admin"));
         

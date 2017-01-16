@@ -9,17 +9,23 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import snmp.manager.Groups.Group;
 
 
 public class Device implements Serializable{
     
-    String ipAdress;
-    String alias;
-    private Group group;
-    public String status = "offline";
+     private String ipAddress;
+     private String alias;
+     private String status;
+     private Group group;
+     //not serializable
+     private transient SimpleStringProperty ipAddressProperty;
+     private transient SimpleStringProperty aliasProperty;
+     private transient SimpleStringProperty statusProperty = new SimpleStringProperty("offline");
     
-    Map<String, String> oids; //oids values
+    Map<String, String> oids= new HashMap<String, String>(); //oids values
      public static final Map<String, String> ScanOIDs = new HashMap<String, String>(); 
     static { 
     // some general OIDs that are valid in almost every MIB 
@@ -28,24 +34,28 @@ public class Device implements Serializable{
     ScanOIDs.put("Location: ", "1.3.6.1.2.1.1.6.0"); 
      };
     
+    //constructors
     public Device(String ip)
     {
-        ipAdress=ip;
-        oids = new HashMap<String, String>();
+        ipAddress=ip;
+        ipAddressProperty=new SimpleStringProperty(ip);
     }
      public Device(String ip, String alias)
     {
-        ipAdress=ip;
+        ipAddress=ip;
+        ipAddressProperty=new SimpleStringProperty(ip);
         this.alias=alias;
-        oids = new HashMap<String, String>();
+        this.aliasProperty=new SimpleStringProperty(alias);
     }
       public Device(String ip, String alias, String groupName)
     {
-        ipAdress=ip;
+        this.ipAddress=ip;
+        ipAddressProperty=new SimpleStringProperty(ip);
         this.alias=alias;
-        oids = new HashMap<String, String>();
+        this.aliasProperty=new SimpleStringProperty(alias);
         group=new Group(groupName);
     }
+      //getters and setters
       public void setGroup(String groupName)
       {
           group=new Group(groupName);
@@ -54,6 +64,44 @@ public class Device implements Serializable{
       {
           return group.getName();
       }
+       public StringProperty getGroupProperty()
+      {
+          return group.getNameProperty();
+      }
+      /*  public StringProperty getGroupProperty()
+      {
+          return group.getNameProperty();
+      }*/
+       public String getIpAdress(){
+           return ipAddress;
+       }
+        public StringProperty getIpAdressProperty(){
+           return ipAddressProperty;
+       }
+       public void setIpAdress(String ip){
+           ipAddress=ip;
+           this.ipAddressProperty.set(ip);
+       }
+       public String getAlias(){
+           return alias;
+       }
+       public StringProperty getAliasProperty(){
+           return aliasProperty;
+       }
+       public void setAlias(String alias){
+           this.alias=alias;
+           this.aliasProperty.set(alias);
+       }
+       public String getStatus(){
+           return status;
+       }
+       public StringProperty getStatusProperty(){
+           return statusProperty;
+       }
+       public void setStatus(String status){
+           this.status=status;
+           this.statusProperty.set(status);
+       }
     
     
     

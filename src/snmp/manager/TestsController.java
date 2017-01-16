@@ -98,7 +98,7 @@ public class TestsController implements Initializable {
         Devices.addDevice("host", "192.168.56.102");
         
         Devices.getDevicesList().stream().forEach(device ->{
-            tableLines.add(new Element(device.alias, device.ipAdress, device.status, testValue, device));
+            tableLines.add(new Element(device.getAlias(), device.getIpAdress(), device.getStatus(), testValue, device));
         });
         tableLines.add(new Element("unknown", "192.168.56.103", "N/A", testValue));
         tableLines.add(new Element("not assigned", "192.168.56.106", "N/A", testValue));
@@ -238,7 +238,7 @@ public class TestsController implements Initializable {
                 p.run();
                 line.setStatus((p.isReplied())?"online":"offline");
                 if(line.isRegistered())
-                    if(p.isReplied())line.device.status="online";else line.device.status="offline";
+                    if(p.isReplied())line.device.setStatus("online");else line.device.setStatus("offline");
                 line.setTestResult(p.getAnswer());
                 System.out.println("end ping "+line.getIP()+" result "+p.isReplied()+ " answer "+p.getAnswer());
                 devicesTable.refresh();
@@ -319,8 +319,8 @@ public class TestsController implements Initializable {
                                 System.out.println("Error Status Text = " + errorStatusText);
                                 line.setStatus("warning"); 
                                 if(line.isRegistered())
-                                    if(!line.device.status.matches("offline"))
-                                        line.device.status="warning";
+                                    if(!line.device.getStatus().matches("offline"))
+                                        line.device.setStatus("warning");
                             }
                         }
                         else{
@@ -328,8 +328,8 @@ public class TestsController implements Initializable {
                             System.out.println("Error: Response PDU is null");
                             line.setStatus("warning"); 
                             if(line.isRegistered())
-                                if(!line.device.status.matches("offline"))
-                                    line.device.status="warning";
+                                if(!line.device.getStatus().matches("offline"))
+                                    line.device.setStatus("warning");
                         }
                     }
                     else{
@@ -337,8 +337,8 @@ public class TestsController implements Initializable {
                         System.out.println("Error: Agent Timeout... ");
                         line.setStatus("warning"); 
                         if(line.isRegistered())
-                            if(!line.device.status.matches("offline"))
-                              line.device.status="warning";
+                            if(!line.device.getStatus().matches("offline"))
+                              line.device.setStatus("warning");
                     }
                     snmp.close();
                     

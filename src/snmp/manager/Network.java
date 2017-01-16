@@ -41,7 +41,7 @@ import static snmp.manager.Users.saveUsersFile;
 public class Network {
     
   
-   IPv4 ip;
+  /* IPv4 ip;
    String subnet;
    private ArrayList<Device> devices = Devices.getDevicesList(); //contains the network devices // variables should not start with capital letter, a class does, to avoid confusion between a class and a variable
    
@@ -239,7 +239,7 @@ public class Network {
      *
      * 
      */
-    public Device getDevice(String ip){
+   /* public Device getDevice(String ip){
         int i;
         for(i=0; (i<devices.size())?!devices.get(i).ipAdress.equals(ip):false; i++){ 
                 System.out.println("searching for device "+i+"/"+devices.size());
@@ -256,7 +256,7 @@ public class Network {
      *
      * @return int : number of created devices
      */
-    public int getDevicesCount(){
+   /* public int getDevicesCount(){
         return devices.size();
     }
     
@@ -277,6 +277,6 @@ public class Network {
            n.devices.get(i).printDeviceInformations();
        }
        //n.saveDeviceFile();
-   }
+   }*/
 }
 

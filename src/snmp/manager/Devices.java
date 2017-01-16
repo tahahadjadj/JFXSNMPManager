@@ -40,7 +40,7 @@ public class Devices  implements Serializable {
               devicesList = (ArrayList<Device>)input.readObject();
               //display its data
               for(Device device: devicesList){
-                    System.out.println("Recovered Device: " + device.ipAdress);
+                    System.out.println("Recovered Device: " + device.getIpAdress()+" Group: "+device.getGroup());
               }
             }
             finally{
@@ -103,10 +103,21 @@ public class Devices  implements Serializable {
     public static Device addDevice(String alias, String IP ){
         Device newDevice = getDevice(IP);
         if(newDevice==null){
-            newDevice=new Device(IP);
+            newDevice=new Device(IP,alias);
             devicesList.add(newDevice);
+           
         }
-        newDevice.alias=alias;
+        
+        return newDevice;
+    }
+    public static Device addDevice(String alias, String IP,String group){
+        Device newDevice = getDevice(IP);
+        if(newDevice==null){
+            newDevice=new Device(IP,alias,group);
+            devicesList.add(newDevice);
+            
+        }
+        
         return newDevice;
     }
     
@@ -118,7 +129,7 @@ public class Devices  implements Serializable {
      */
     public static Device getDevice(String IP){
         int i;
-        for(i=0; (i<devicesList.size())?!devicesList.get(i).ipAdress.equals(IP):false; i++){ 
+        for(i=0; (i<devicesList.size())?!devicesList.get(i).getIpAdress().equals(IP):false; i++){ 
                 System.out.println("searching for device "+i+"/"+devicesList.size());
             }
         if(i==devicesList.size()){
@@ -165,7 +176,19 @@ public class Devices  implements Serializable {
     
     public static void main(String[] args){
 
+        addDevice("d1","192.168.1.2","g1");
+        addDevice("d2","192.168.1.3","g1");
+        addDevice("d3","192.168.1.4","g2");
+        addDevice("d5","192.168.1.5","admin");
+        addDevice("d6","192.168.1.6","admin");
+        addDevice("d7","192.168.1.7","admin");
+        saveDevicesFile();
         importDevices();
+        ArrayList<Device> a= getGroupDevices("admin");
+        for(int i=0;i<a.size(); i++)
+        {
+            System.out.println(a.get(i).getAlias());
+        }
         
     }
     
