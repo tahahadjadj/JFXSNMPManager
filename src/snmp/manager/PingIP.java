@@ -100,7 +100,9 @@ public class PingIP {
                             output.add(s);
                             outputStram= (outputStram+s);
                             if(i==3)
-                                replied=output.get(3).substring(0, 5).matches("Reply");
+                                if(output.get(3).substring(0, 5).matches("Reply"))
+                                    if(output.get(3).length()>32)
+                                        replied=output.get(3).substring(27, 32).matches("bytes");
                             i++;
 			}
 
@@ -123,7 +125,9 @@ public class PingIP {
                             output.add(s);
                             outputStram= (outputStram+s);
                             if(i==3)
-                                replied=output.get(3).substring(0, 5).matches("Reply");
+                                if(output.get(3).substring(0, 5).matches("Reply"))
+                                    if(output.get(3).length()>32)
+                                        replied=output.get(3).substring(27, 32).matches("bytes");
                             i++;
 			}
 
