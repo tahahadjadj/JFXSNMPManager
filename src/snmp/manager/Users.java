@@ -34,7 +34,6 @@ public class Users implements Serializable {
         private transient SimpleStringProperty telephoneProperty = new SimpleStringProperty("offline");
         
         //other caracteristics to be added later
-        
         public String getUsername(){
             
             return username;
@@ -46,6 +45,12 @@ public class Users implements Serializable {
          public void setUsername(String username){
              this.username=username;
              this.usernameProperty=new SimpleStringProperty(username);
+             
+         }
+         public void setPassword(String passwd) throws NoSuchAlgorithmException{
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(passwd.getBytes());
+                this.password = md.digest();
              
          }
          public String getAddress(){
@@ -175,6 +180,19 @@ public class Users implements Serializable {
         }
         return 1;
     }
+     public static int addUser(User user){
+         User newUser = getUser(user.getUsername());
+         if(newUser==null){
+             usersList.add(user);
+         }
+         else{
+             System.err.println("username already exists");
+             return -1;
+         }
+        return 1;
+    }
+   
+  
     
     /**
      *  check the authentification of a given username and password
@@ -242,8 +260,15 @@ public class Users implements Serializable {
             Group group=Groups.getGroup(groupName);
             if(group!=null)
             {
-                user.groupHeBelongsTo.add(group);
-                System.out.println(userName+" added to the group "+groupName);
+                //verify if he is already in the group
+                int i;
+                for(i=0; (i<user.groupHeBelongsTo.size())?!user.groupHeBelongsTo.get(i).getName().equals(groupName):false; i++){ 
+                  System.out.println("searching for group");
+                }
+                if(i==user.groupHeBelongsTo.size()){
+                  user.groupHeBelongsTo.add(group);
+                  System.out.println(userName+" added to the group "+groupName);
+                }
             }
             else
             {

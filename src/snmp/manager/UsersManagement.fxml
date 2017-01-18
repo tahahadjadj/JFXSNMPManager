@@ -79,7 +79,7 @@
                         <ButtonBar layoutX="216.0" layoutY="413.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="413.0">
                           <buttons>
                               <Button mnemonicParsing="false" onAction="#handleNewUser" text="New" />
-                              <Button mnemonicParsing="false" text="Edit" />
+                              <Button mnemonicParsing="false" onAction="#handleEditUser" text="Edit" />
                               <Button mnemonicParsing="false" onAction="#handleDeleteUser" text="Delete" />
                           </buttons>
                         </ButtonBar>

@@ -100,9 +100,10 @@ public class UsersManagementController implements Initializable {
         usersTable.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> showUserDetails(newValue));
     }    
-      private void showUserDetails(User user) {
+    private void showUserDetails(User user) {
     if (user != null) {
         // Fill the labels with info from the user object.
+        usersTable.refresh();
         userN.setText(user.getUsername());
         address.setText(user.getAddress());
         telephone.setText(user.getTelephone());
@@ -136,6 +137,7 @@ public class UsersManagementController implements Initializable {
          if (selectedIndex >= 0) {
              User u=usersTable.getItems().get(selectedIndex);
              Users.getUsersList().remove(u);
+             Users.saveUsersFile();
              usersTable.getItems().remove(selectedIndex);
          } else {
               Alert alert = new Alert(AlertType.WARNING);
@@ -149,37 +151,63 @@ public class UsersManagementController implements Initializable {
    
     }
     @FXML
-    private void handleNewUser() {
-         User tempUser = new User();
-         boolean okClicked = UsersManagementController.this.showUserEditDialog(tempUser);
-         if (okClicked) {
-         tableLines.add(tempUser);
+    private void handleNewUser() throws IOException{
+        User tempUser = new User();
+        boolean okClicked = showUserEditDialog(tempUser);
+        if (okClicked) {
+            tableLines.add(tempUser);
+          
+        }      
     }
+    @FXML
+    private void handleEditUser() throws IOException{
+         User selectedUser = usersTable.getSelectionModel().getSelectedItem();
+         if (selectedUser != null) {
+            boolean okClicked = showUserEditDialog(selectedUser);
+            if (okClicked) {
+               System.out.println(selectedUser.getUsername());
+               showUserDetails(selectedUser);
+              
+            }
+         } else {
+        // Nothing selected.
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.initOwner(SNMPManager.mainStage);
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No user Selected");
+            alert.setContentText("Please select a user in the table.");
+
+            alert.showAndWait();
+    }
+        
+    }
+    public boolean showUserEditDialog(User user) throws IOException {
+         // Load the fxml file and create a new stage for the popup dialog.
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("UserEditDialog.fxml"));
+        AnchorPane page = (AnchorPane) loader.load();
+
+        // Create the dialog Stage.
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit User");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(SNMPManager.mainStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+       
+        // Set the user into the controller.
+        UserEditDialogController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        controller.setUser(user);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+        return controller.okClicked();
+     
+    }
+        
    
 }
-    @FXML
-    private void handleEditUser() {
-    User selectedUser = usersTable.getSelectionModel().getSelectedItem();
-    if (selectedUser != null) {
-        boolean okClicked = UsersManagementController.this.showUserEditDialog(selectedUser);
-        if (okClicked) {
-            showUserDetails(selectedUser);
-        }
 
-    } else {
-        // Nothing selected.
-        Alert alert = new Alert(AlertType.WARNING);
-        alert.initOwner(SNMPManager.mainStage);
-        alert.setTitle("No Selection");
-        alert.setHeaderText("No User Selected");
-        alert.setContentText("Please select a user in the table.");
 
-        alert.showAndWait();
-    }
-}
-    public boolean showUserEditDialog(User user) {
-        //code to add
-        return true;
-}
-}
 
