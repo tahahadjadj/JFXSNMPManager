@@ -180,3 +180,5 @@ public class UserEditDialogController implements Initializable {
         this.dialogStage=dialogStage;
     }
 }
+
+

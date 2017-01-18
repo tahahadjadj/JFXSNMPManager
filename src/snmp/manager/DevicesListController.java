@@ -68,7 +68,6 @@ public class DevicesListController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(SNMPManagerController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
     private class DeviceIcon extends Button{
@@ -76,7 +75,7 @@ public class DevicesListController implements Initializable {
         public DeviceIcon(Device device) {
             super(device.getAlias());
             this.device = device;
-            this.setText(device.getAlias()+"\n"+device.getIpAdress());
+            this.setText(device.getAlias()+"\n"+device.getIpAdress()+"\n"+device.getStatus());
         }
         
     }
