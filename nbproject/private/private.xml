@@ -5,8 +5,8 @@
         <group>
             <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/UsersManagementController.java</file>
             <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/UserEditDialogController.java</file>
-            <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/DashBoardController.java</file>
-            <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/UserEditDialog.fxml</file>
+            <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/Groups.java</file>
+            <file>file:/E:/Master2/eclipseWorkSpace/snmpRepository/snmpminiproject/src/snmp/manager/Users.java</file>
         </group>
     </open-files>
 </project-private>
